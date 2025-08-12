@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Anton Blomberg — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eff1f2;
+  --text:#62868a;
+  --accent:#b7410e;
+  --nav-w:220px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:"Inter",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  font-size:12px;
+}
+
+/* MENY */
+nav{
+  width:var(--nav-w);
+  position:fixed; left:0; top:0; bottom:0;
+  padding:20px;
+  display:flex; flex-direction:column; align-items:center;
+}
+nav h1{
+  font-size:20px; font-weight:700; font-family:'Playfair Display',serif;
+  text-transform:uppercase; margin:0 0 20px 0; text-align:center;
+}
+nav h1 a{ color:var(--text); text-decoration:none; }
+nav ul{ list-style:none; padding:0; margin:0; text-align:center; width:100%; }
+nav li{ margin:10px 0; font-size:14px; text-transform:uppercase; }
+nav a.menu-link{
+  text-decoration:none; color:var(--text);
+  display:inline-block; padding-bottom:2px; border-bottom:1px solid var(--text);
+}
+nav a.menu-link:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+nav a.menu-link.active{ color:var(--accent); border-bottom-color:var(--accent); }
+nav .madeby{ font-size:12px; margin-top:8px; text-align:center; }
+
+/* MAIN */
+main{ margin-left:var(--nav-w); padding:20px; width:calc(100% - var(--nav-w)); min-height:100vh; }
+.page{ max-width:1000px; margin:0 auto; }
+.left{ text-align:left; }
+
+/* Rubriker */
+h2,h3{ font-family:"Playfair Display",serif; font-size:20px; margin:10px 0 8px 0; color:var(--text); }
+
+/* HEM */
+.hero{ display:flex; flex-direction:column; align-items:center; }
+.hero .hero-img{ 
+  width:450px; 
+  height:560px; 
+  background:transparent; 
+  margin-top:0; 
+}
+
+/* ARBETE — kolumner */
+.projects {
+  column-count: 3;
+  column-gap: 15px;
+}
+.project {
+  display: inline-block; 
+  width: 100%;
+  margin-bottom: 15px;
+  background:transparent;
+  position:relative; cursor:pointer; overflow:hidden;
+}
+.project img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.project-title{
+  display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-family:"Playfair Display",serif;
+  font-size:32px;
+  color:#fff;
+  text-align:center;
+}
+.project:hover .project-title{ display:block; }
+.project:hover img{ filter:brightness(0.65); }
+
+/* MODAL */
+.modal{
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.88);
+  align-items:center; justify-content:center;
+  padding:24px;
+  z-index:9999;
+}
+.modal-inner{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  max-width:92vw;
+  max-height:86vh;
+  overflow:auto;
+  background:transparent;
+  scrollbar-width:none;         
+  -ms-overflow-style:none;      
+}
+.modal-inner::-webkit-scrollbar{ display:none; }
+
+.modal-content{
+  width:min(50vw, 1100px);
+  max-width:92vw;
+}
+
+.modal-title{
+  color:#fff; font-family:'Playfair Display',serif; font-size:20px; margin:0 0 12px 0;
+}
+.modal-description {
+  color: #fff;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.image-list{ display:flex; flex-direction:column; gap:12px; }
+.image-list img{
+  display:block;
+  margin:0 auto 16px auto;
+  max-width:100%;
+  max-height:85vh;
+  width:auto;
+  height:auto;
+  background:transparent;
+}
+
+/* OM MIG */
+.om-photo{ 
+  width:200px; 
+  height:200px; 
+  background:transparent center/cover no-repeat; 
+  margin:0 0 10px 0; 
+}
+.om-about{ max-width:700px; margin:0 0 16px 0; }
+.cv .entry{ margin-bottom:10px; }
+
+/* KONTAKT */
+.kontakt-outer{ display:flex; justify-content:center; width:100%; transform: translateX(calc(var(--nav-w) / -2)); }
+.kontakt{ text-align:center; }
+.kontakt a{ color:var(--text); text-decoration:none; }
+.kontakt a:hover{ color:var(--accent); }
+
+/* Responsiv */
+@media (max-width:900px){
+  .projects{ column-count:1; }
+  .hero .hero-img{ width:320px; height:420px; }
+}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <h1 id="navName"><a href="#hem">Anton Blomberg</a></h1>
+  <ul id="navList">
+    <li><a class="menu-link" href="#hem">Hem</a></li>
+    <li><a class="menu-link" href="#arbete">Arbete</a></li>
+    <li><a class="menu-link" href="#om-mig">Om mig</a></li>
+    <li><a class="menu-link" href="#kontakt">Kontakt</a></li>
+  </ul>
+  <div class="madeby" id="madeBy">Hemsida skapad av Anton Blomberg © 2025</div>
+</nav>
+
+<main id="main"></main>
+
+<div class="modal" id="modal"></div>
+
+<script>
+const main = document.getElementById('main');
+const navList = document.getElementById('navList');
+const madeBy = document.getElementById('madeBy');
+const modal  = document.getElementById('modal');
+
+function setActive(hash){
+  navList.querySelectorAll('a.menu-link').forEach(a=>{
+    const active = a.getAttribute('href')===hash;
+    a.classList.toggle('active', active);
+  });
+}
+function setUniformUnderline(){
+  const links = Array.from(navList.querySelectorAll('a.menu-link'));
+  links.forEach(a=> a.style.width='auto');
+  const max = Math.ceil(Math.max(...links.map(a => a.getBoundingClientRect().width)));
+  links.forEach(a=> a.style.width = max + 'px');
+}
+function getMadeByBottomTop(){
+  const r = madeBy.getBoundingClientRect();
+  const mainR = main.getBoundingClientRect();
+  return r.bottom - mainR.top;
+}
+function route(){
+  const hash = location.hash || '#hem';
+  if(hash==='#hem') renderHome();
+  else if(hash==='#arbete') renderArbete();
+  else if(hash==='#om-mig') renderOm();
+  else if(hash==='#kontakt') renderKontakt();
+  setActive(hash);
+  requestAnimationFrame(()=>{ setUniformUnderline(); alignAll(); });
+}
+
+const PROJECTS = [
+  { 
+    title: 'Köksbord i björkplywood',
+    description: ` Diameter: 75 cm Höjd: 74 cm <br>
+
+Detta bord är ritat och konstruerat av mig som en utforskning av ärlighet i form och materialitet. Designen syftar till att vara så transparent och okonstlad som möjligt, samtidigt som den lyfter fram björkplywoodens estetiska och strukturella kvaliteter. Ett kompositmaterial som traditionellt dolts. Bordet är byggt med en grund i hållfasthetslära, vilket säkerställer en konstruktion som är robust och gjord för att hålla över tid.`,
+    images: ['bord2.jpg','bord1.jpg','bord3.jpg','bord4.jpg','bord5.jpg'] 
+  },
+  { 
+    title: 'Examensarbete',
+    description: `Design för cirkularitet: Återbruk av produktionsspill hos Gärsnäs. <br> <br> 
+
+I mitt examensarbete undersökte jag möjligheterna att återbruka produktionsspill inom möbelindustrin, i samarbete med det svenska möbelföretaget Gärsnäs. Arbetet utgick från företagets ambition att bli helt cirkulära till år 2030. Med särskilt fokus på spill av trä och textil utvecklade jag ett designförslag som integrerar återbruk i befintliga tillverkningsflöden.
+
+Projektet följde en materialdriven designprocess i kombination med Double-Diamond-modellen och tillverkningsanpassad design. Genom platsbesök, intervjuer och materialanalys kartlade jag tillgängligt spillmaterial och utvärderade dess potential. Resultatet blev en modulär kroklist tillverkad av spillträ, designad i linje med Gärsnäs estetik och produktionsförutsättningar.
+
+Arbetet visar hur hållbarhet kan förenas med funktionell och estetisk design, och hur restmaterial kan ges nytt liv i produkter som är tilltalande för den privata marknaden. Genom ett systematiskt arbetssätt kunde projektet bidra till minskat avfall och stärkt resurseffektivitet – centrala mål inom cirkulär ekonomi.`,
+    images: ['examen10.jpg','examen2.jpg','examen3.jpg','examen4.jpg','examen5.jpg','examen1.jpg','examen7.jpg','examen8.jpg','examen9.jpg','examen6.jpg'] 
+  },
+  { 
+    title: 'Visuell tidtabellsklocka',
+    description: ` Kurs: Produktionsanpassat utvecklingsprojekt <br> <br> 
+
+Felix är en visuellt kommunikativ tidtabellsklocka utvecklad för att komplettera traditionella avgångstavlor i kollektivtrafiken. Projektet hade som huvudsakligt mål att ta fram en produkt som är möjlig att producera industriellt, med fokus på tillverkningsanpassning och materialoptimering.
+
+Genom en ljusslinga som rör sig längs en dubbelkonisk spiral visualiserar Felix hur nära nästa tåg är att ankomma till perrongen – ju närmare ljuset är spiralens mittpunkt, desto närmare är tåget. Varje spiralarm representerar ett spår, vilket ger ett direkt och intuitivt gränssnitt. Detta möjliggör snabb överblick för pendlare i rörelse, och inkluderar samtidigt personer med kognitiva utmaningar, synnedsättningar eller barn som ännu inte lärt sig tolka digitala klockor.
+
+Klockan är tillverkad i laserskuret och lasersvetsat rostfritt stål i samarbete med IS Plåt. Den slutliga prototypen mäter cirka 100 cm i bredd och 618 cm i höjd. Jag ansvarade främst för formgivning, användargränssnitt, FE-analys och kontakt med tillverkaren för att säkerställa ett genomförbart och produktionseffektivt resultat.`,
+    images: ['felix1.jpg','felix2.jpg','felix3.jpg','felix4.jpg','felix5.jpg','felix6.jpg','felix7.jpg','felix8.jpg'] 
+  },
+  { 
+    title: 'Ljushållare',
+    description: `Ljushållare / tandborstställ  <br>
+Men vem är jag att bestämma vad den kan användas som!  <br> Svarvad i aluminium.`,
+    images: ['ljus1.jpg','ljus2.jpg','ljus3.jpg','ljus4.jpg'] 
+  },
+  { 
+    title: 'Delvis mjuk',
+    description: ` 
+Tävlingsbidrag Sydform miniatyrer 2024  <br> <br> 
+Stol i skala 1:5, 3D-printad pet samt akryl.
+
+Idén är att visa på potentialen med additiv tillverkning samt skapa en stol som är enkel att montera utan skruvar eller andra fästelement. Ryggstödet och sitsen klickas smidigt ihop, vilket gör konstruktionen både snabb och intuitiv att sätta samman.
+
+Stolen gick vidare i tävlingen och ställdes ut på Spritfabriken Konsthall, Helsingborg, oktober 2024.`,
+    images: ['stol1.jpg','stol2.jpg','stol3.jpg','stol4.jpg','stol5.jpg','stol6.jpg'] 
+  },
+  { 
+    title: 'Affischdesign',
+    description: `Affisch för Skånes Kabelsportsförening <br> <br> 
+
+En informationsaffisch med syftet att nå ut till nya deltagare och skapa intresse för wakeboard. Fokus låg på tydlig kommunikation och en lekfull, tillgänglig estetik.
+
+Designen kombinerar rena typografiska element med handritade former för att skapa en känsla av både struktur och rörelse, i linje med sporten och dess miljö. Färgvalet i blått associerar till vatten och aktivitet.`,
+    images: ['wake.jpg'] 
+  },
+  {
+    title: 'Väska anpassad för lådcykel ',
+    description: ` 
+Kurs: Produktionsanpassat utvecklingsprojekt <br> <br>
+
+Designmetodik för produktutvecklare, vår första introduktion till design på utbildningen, fick vi uppgiften att skapa en väska anpassad för lådcykel. Vi riktade vår design mot förskolelärare som transporterar barn i lådan men samtidigt behöver ha olika saker lättillgängliga. Lösningen blev en extern hållare som monteras på cykeln och där väskan enkelt fästs.
+
+Mitt huvudansvar var infästningen mellan cykel och väska. Resultatet, som syns på bilden ovan, blev två diskreta fickor som kilas in i hållaren. Den triangulära lösningen ger stabilitet och förhindrar att väskan rör sig under cykling. Användartester var ett viktigt verktyg i denna delen av processen.`,
+    images: ['väsk3.jpeg','väsk1.jpeg','väsk4.jpeg']
+  },
+  {
+    title: 'Smörlycka',
+    description: ` Diskställ för Söderberg & Sara <br> <br>
+Kurs: Användarcentrerad design <br>
+
+Vår grupp skapade ett diskställ för caféet Söderberg & Sara i Malmö. Vi observerade att det inte var helt uppenbart vart disken skulle lämnas samt att personalen gjorde onödigt mycket jobb med disken. 
+
+Resultatet blev konceptet ”Smörlycka, hur säger man disk utan att säga disk?” Vi löste problemet med lokalförändringar och en poster som vägledde kunderna undermedvetet, samtidigt som vi underlättade för personalen med en prototyp av ett diskställ som rymmer fler tallrikar i befintliga diskbackar och utnyttjar maskinens höjd. I kursen fokuserade vi på användare genom observationsstudier och användarintervjuer.`,
+    images: ['cafe1.jpeg','cafe4.jpeg','cafe5.jpeg','cafe2.jpeg','cafe3.jpg','cafe6.jpeg','cafe7.jpeg']
+  },
+  {
+    title: 'Parametriserad hålslagare',
+    description: `
+Kurs: 3D CAD <br> <br>
+
+Hålslagare gjord i Creo, parametriserad, vilket gör det möjligt att enkelt anpassa modellen för olika standarder, inklusive den svenska standarden samt internationella variationer.`,
+    images: ['hål1.png', 'hål2.png']
+  }
+];
+
+function openModal(project){
+  const desc = project.description 
+    ? `<div class="modal-description">${project.description}</div>` 
+    : '';
+  modal.innerHTML = `
+    <div class="modal-inner">
+      <div class="modal-content">
+        <h3 class="modal-title">${project.title}</h3>
+        ${desc}
+        <div class="image-list">
+          ${project.images.map(file => `<img src="${file}" alt="${project.title}">`).join('')}
+        </div>
+      </div>
+    </div>`;
+  modal.style.display = 'flex';
+  modal.onclick = () => modal.style.display = 'none';
+  modal.querySelector('.modal-content').onclick = (e) => e.stopPropagation();
+}
+
+function renderHome(){
+  main.innerHTML = `
+    <section class="page left" id="homePage">
+      <div class="hero">
+        <div class="hero-img" id="heroImg"></div>
+      </div>
+    </section>`;
+  const hero = document.getElementById('heroImg');
+  const allImages = PROJECTS.flatMap(p => p.images);
+  if (allImages.length){
+    const rand = allImages[Math.floor(Math.random()*allImages.length)];
+    hero.style.background = `url('${rand}') center/cover no-repeat`;
+  }
+}
+function renderArbete(){
+  main.innerHTML = `
+    <section class="page left" id="workPage">
+      <div class="projects" id="projects"></div>
+    </section>`;
+  const wrap = document.getElementById('projects');
+  PROJECTS.forEach(p => {
+    const tile = document.createElement('div');
+    tile.className = 'project';
+    tile.innerHTML = `
+      <img src="${p.images[0]}" alt="${p.title}">
+      <div class="project-title">${p.title}</div>
+    `;
+    tile.addEventListener('click', () => openModal(p));
+    wrap.appendChild(tile);
+  });
+}
+function renderOm(){
+  main.innerHTML = `
+    <section class="page left" id="aboutPage">
+      <div class="om-photo" id="aboutPhoto"></div>
+      <h2>Om mig</h2>
+      <div class="om-about">Kort brödtext om mig. Jag är designer/ingenjör med fokus på produkt- och designutveckling samt cirkuläritet.</div>
+      <div class="cv">
+        <h3>Arbetslivserfarenheter</h3>
+        <div class="entry"><b>2025 — Gärsnäs AB</b> Examensarbete...</div>
+        <!-- Kortat för tydlighet -->
+      </div>
+    </section>`;
+  const aboutPhoto = document.getElementById('aboutPhoto');
+  if (aboutPhoto) aboutPhoto.style.backgroundImage = "url('ommig.jpg')";
+}
+function renderKontakt(){
+  main.innerHTML = `
+    <section class="page" id="contactPage">
+      <div class="kontakt-outer">
+        <div class="kontakt" id="kontaktBlock">
+          <h2>Kontakt</h2>
+          <p>Telefon: <a href="tel:0725436337">0725436337</a></p>
+          <p>Mail: <a href="mailto:anton.blomberg1@gmail.com">anton.blomberg1@gmail.com</a></p>
+          <p><a href="https://linkedin.com/in/antonblomberg" target="_blank">linkedin.com/in/antonblomberg</a></p>
+        </div>
+      </div>
+    </section>`;
+}
+function alignAll(){
+  const madeByBottom = getMadeByBottomTop();
+  const home = document.getElementById('homePage');
+  const work = document.getElementById('workPage');
+  const about= document.getElementById('aboutPage');
+  const contact = document.getElementById('kontaktBlock');
+  if(home)  home.style.marginTop  = (madeByBottom + 8) + 'px';
+  if(work)  work.style.marginTop  = (madeByBottom + 8) + 'px';
+  if(about) about.style.marginTop = (madeByBottom + 8) + 'px';
+  if(contact){
+    const lastLi = navList.querySelector('li:last-child');
+    const liRect = lastLi.getBoundingClientRect();
+    const mainRect= main.getBoundingClientRect();
+    contact.style.marginTop = (liRect.bottom - mainRect.top + 6) + 'px';
+  }
+}
+window.addEventListener('resize', ()=>{ setUniformUnderline(); alignAll(); });
+window.addEventListener('hashchange', route);
+window.addEventListener('load', route);
+</script>
+</body>
+</html>
