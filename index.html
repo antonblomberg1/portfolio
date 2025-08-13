@@ -54,95 +54,57 @@ h2,h3{ font-family:"Playfair Display",serif; font-size:20px; margin:10px 0 8px 0
 
 /* HEM */
 .hero{ display:flex; flex-direction:column; align-items:center; }
-.hero .hero-img{ 
-  width:450px; 
-  height:560px; 
-  background:transparent; 
-  margin-top:0; 
+.hero .hero-img{
+  width:450px; height:560px;
+  background:transparent;
+  margin-top:0;
+  opacity:0;
+  transition:opacity 0.8s ease-in;
 }
+.hero .hero-img.visible{ opacity:1; }
 
 /* ARBETE — kolumner */
-.projects {
-  column-count: 3;
-  column-gap: 15px;
-}
+.projects { column-count: 3; column-gap: 15px; }
 .project {
-  display: inline-block; 
-  width: 100%;
-  margin-bottom: 15px;
-  background:transparent;
-  position:relative; cursor:pointer; overflow:hidden;
+  display:inline-block; width:100%; margin-bottom:15px;
+  background:transparent; position:relative; cursor:pointer; overflow:hidden;
 }
-.project img{
-  width:100%;
-  height:auto;
-  display:block;
-}
+.project img{ width:100%; height:auto; display:block; }
 .project-title{
   display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  font-family:"Playfair Display",serif;
-  font-size:32px;
-  color:#fff;
-  text-align:center;
+  font-family:"Playfair Display",serif; font-size:32px; color:#fff; text-align:center;
 }
 .project:hover .project-title{ display:block; }
 .project:hover img{ filter:brightness(0.65); }
 
-/* MODAL */
+/* MODAL (fade utan vitt blink) */
 .modal{
-  display:none; position:fixed; inset:0;
+  position:fixed; inset:0; display:block;
   background:rgba(0,0,0,0.88);
   align-items:center; justify-content:center;
-  padding:24px;
-  z-index:9999;
+  padding:24px; z-index:9999;
+  opacity:0; pointer-events:none;
+  transition: opacity 0.4s ease;
 }
+.modal.show{ opacity:1; pointer-events:auto; }
 .modal-inner{
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  max-width:92vw;
-  max-height:86vh;
-  overflow:auto;
-  background:transparent;
-  scrollbar-width:none;         
-  -ms-overflow-style:none;      
+  display:flex; align-items:flex-start; justify-content:center;
+  max-width:92vw; max-height:86vh; overflow:auto; background:transparent;
+  scrollbar-width:none; -ms-overflow-style:none;
 }
 .modal-inner::-webkit-scrollbar{ display:none; }
-
-.modal-content{
-  width:min(50vw, 1100px);
-  max-width:92vw;
-}
-
+.modal-content{ width:min(50vw, 1100px); max-width:92vw; }
 .modal-title{
   color:#fff; font-family:'Playfair Display',serif; font-size:20px; margin:0 0 12px 0;
 }
-.modal-description {
-  color: #fff;
-  font-size: 14px;
-  font-family: "Inter", sans-serif;
-  margin: 0 0 16px 0;
-  line-height: 1.4;
-}
-
+.modal-description{ color:#fff; font-size:14px; font-family:"Inter",sans-serif; margin:0 0 16px 0; line-height:1.4; }
 .image-list{ display:flex; flex-direction:column; gap:12px; }
 .image-list img{
-  display:block;
-  margin:0 auto 16px auto;
-  max-width:100%;
-  max-height:85vh;
-  width:auto;
-  height:auto;
-  background:transparent;
+  display:block; margin:0 auto 16px auto; max-width:100%; max-height:85vh; width:auto; height:auto; background:transparent;
 }
 
-/* OM MIG */
-.om-photo{ 
-  width:200px; 
-  height:200px; 
-  background:transparent center/cover no-repeat; 
-  margin:0 0 10px 0; 
-}
+/* OM MIG / CV */
+.om-photo{ width:200px; height:200px; background:transparent center/cover no-repeat; margin:0 0 10px 0; }
 .om-about{ max-width:700px; margin:0 0 16px 0; }
 .cv .entry{ margin-bottom:10px; }
 
@@ -151,6 +113,19 @@ h2,h3{ font-family:"Playfair Display",serif; font-size:20px; margin:10px 0 8px 0
 .kontakt{ text-align:center; }
 .kontakt a{ color:var(--text); text-decoration:none; }
 .kontakt a:hover{ color:var(--accent); }
+
+/* Sid-fade (pages) */
+.fade-in{ animation:fadeIn 0.5s ease forwards; }
+.fade-out{ animation:fadeOut 0.5s ease forwards; }
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+@keyframes fadeOut{ from{opacity:1} to{opacity:0} }
+
+/* Prefer-reduced-motion */
+@media (prefers-reduced-motion: reduce){
+  .hero .hero-img{ transition:none }
+  .fade-in,.fade-out{ animation:none }
+  .modal{ transition:none }
+}
 
 /* Responsiv */
 @media (max-width:900px){
@@ -165,7 +140,7 @@ h2,h3{ font-family:"Playfair Display",serif; font-size:20px; margin:10px 0 8px 0
   <ul id="navList">
     <li><a class="menu-link" href="#hem">Hem</a></li>
     <li><a class="menu-link" href="#arbete">Arbete</a></li>
-    <li><a class="menu-link" href="#om-mig">Om mig</a></li>
+    <li><a class="menu-link" href="#om-mig">CV</a></li>
     <li><a class="menu-link" href="#kontakt">Kontakt</a></li>
   </ul>
   <div class="madeby" id="madeBy">Hemsida skapad av Anton Blomberg © 2025</div>
@@ -198,8 +173,27 @@ function getMadeByBottomTop(){
   const mainR = main.getBoundingClientRect();
   return r.bottom - mainR.top;
 }
+
 function route(){
   const hash = location.hash || '#hem';
+  fadeToPage(hash);
+}
+
+function fadeToPage(hash){
+  const oldPage = main.querySelector('section');
+  if(oldPage){
+    oldPage.classList.remove('fade-in');
+    oldPage.classList.add('fade-out');
+    oldPage.addEventListener('animationend', function onEnd(){
+      oldPage.removeEventListener('animationend', onEnd);
+      loadPage(hash);
+    });
+  } else {
+    loadPage(hash);
+  }
+}
+
+function loadPage(hash){
   if(hash==='#hem') renderHome();
   else if(hash==='#arbete') renderArbete();
   else if(hash==='#om-mig') renderOm();
@@ -208,33 +202,35 @@ function route(){
   requestAnimationFrame(()=>{ setUniformUnderline(); alignAll(); });
 }
 
+function applyFade(){
+  const newPage = main.querySelector('section');
+  if(newPage){ newPage.classList.add('fade-in'); }
+}
+
 const PROJECTS = [
   { 
     title: 'Köksbord i björkplywood',
-    description: ` Diameter: 75 cm Höjd: 74 cm <br>
-
+    description: `Diameter: 75 cm Höjd: 74 cm <br><br>
 Detta bord är ritat och konstruerat av mig som en utforskning av ärlighet i form och materialitet. Designen syftar till att vara så transparent och okonstlad som möjligt, samtidigt som den lyfter fram björkplywoodens estetiska och strukturella kvaliteter. Ett kompositmaterial som traditionellt dolts. Bordet är byggt med en grund i hållfasthetslära, vilket säkerställer en konstruktion som är robust och gjord för att hålla över tid.`,
     images: ['bord2.jpg','bord1.jpg','bord3.jpg','bord4.jpg','bord5.jpg'] 
   },
   { 
     title: 'Examensarbete',
-    description: `Design för cirkularitet: Återbruk av produktionsspill hos Gärsnäs. <br> <br> 
-
+    description: `Design för cirkularitet: Återbruk av produktionsspill hos Gärsnäs. <br><br> 
 I mitt examensarbete undersökte jag möjligheterna att återbruka produktionsspill inom möbelindustrin, i samarbete med det svenska möbelföretaget Gärsnäs. Arbetet utgick från företagets ambition att bli helt cirkulära till år 2030. Med särskilt fokus på spill av trä och textil utvecklade jag ett designförslag som integrerar återbruk i befintliga tillverkningsflöden.
-
+<br><br>
 Projektet följde en materialdriven designprocess i kombination med Double-Diamond-modellen och tillverkningsanpassad design. Genom platsbesök, intervjuer och materialanalys kartlade jag tillgängligt spillmaterial och utvärderade dess potential. Resultatet blev en modulär kroklist tillverkad av spillträ, designad i linje med Gärsnäs estetik och produktionsförutsättningar.
-
+<br><br>
 Arbetet visar hur hållbarhet kan förenas med funktionell och estetisk design, och hur restmaterial kan ges nytt liv i produkter som är tilltalande för den privata marknaden. Genom ett systematiskt arbetssätt kunde projektet bidra till minskat avfall och stärkt resurseffektivitet – centrala mål inom cirkulär ekonomi.`,
     images: ['examen10.jpg','examen2.jpg','examen3.jpg','examen4.jpg','examen5.jpg','examen1.jpg','examen7.jpg','examen8.jpg','examen9.jpg','examen6.jpg'] 
   },
   { 
     title: 'Visuell tidtabellsklocka',
-    description: ` Kurs: Produktionsanpassat utvecklingsprojekt <br> <br> 
-
+    description: `Kurs: Produktionsanpassat utvecklingsprojekt <br><br> 
 Felix är en visuellt kommunikativ tidtabellsklocka utvecklad för att komplettera traditionella avgångstavlor i kollektivtrafiken. Projektet hade som huvudsakligt mål att ta fram en produkt som är möjlig att producera industriellt, med fokus på tillverkningsanpassning och materialoptimering.
-
+<br><br>
 Genom en ljusslinga som rör sig längs en dubbelkonisk spiral visualiserar Felix hur nära nästa tåg är att ankomma till perrongen – ju närmare ljuset är spiralens mittpunkt, desto närmare är tåget. Varje spiralarm representerar ett spår, vilket ger ett direkt och intuitivt gränssnitt. Detta möjliggör snabb överblick för pendlare i rörelse, och inkluderar samtidigt personer med kognitiva utmaningar, synnedsättningar eller barn som ännu inte lärt sig tolka digitala klockor.
-
+<br><br>
 Klockan är tillverkad i laserskuret och lasersvetsat rostfritt stål i samarbete med IS Plåt. Den slutliga prototypen mäter cirka 100 cm i bredd och 618 cm i höjd. Jag ansvarade främst för formgivning, användargränssnitt, FE-analys och kontakt med tillverkaren för att säkerställa ett genomförbart och produktionseffektivt resultat.`,
     images: ['felix1.jpg','felix2.jpg','felix3.jpg','felix4.jpg','felix5.jpg','felix6.jpg','felix7.jpg','felix8.jpg'] 
   },
@@ -246,49 +242,42 @@ Men vem är jag att bestämma vad den kan användas som!  <br> Svarvad i alumini
   },
   { 
     title: 'Delvis mjuk',
-    description: ` 
-Tävlingsbidrag Sydform miniatyrer 2024  <br> <br> 
+    description: `Tävlingsbidrag Sydform miniatyrer 2024  <br><br> 
 Stol i skala 1:5, 3D-printad pet samt akryl.
-
+<br><br>
 Idén är att visa på potentialen med additiv tillverkning samt skapa en stol som är enkel att montera utan skruvar eller andra fästelement. Ryggstödet och sitsen klickas smidigt ihop, vilket gör konstruktionen både snabb och intuitiv att sätta samman.
-
+<br><br>
 Stolen gick vidare i tävlingen och ställdes ut på Spritfabriken Konsthall, Helsingborg, oktober 2024.`,
     images: ['stol1.jpg','stol2.jpg','stol3.jpg','stol4.jpg','stol5.jpg','stol6.jpg'] 
   },
   { 
     title: 'Affischdesign',
-    description: `Affisch för Skånes Kabelsportsförening <br> <br> 
-
+    description: `Affisch för Skånes Kabelsportsförening <br><br> 
 En informationsaffisch med syftet att nå ut till nya deltagare och skapa intresse för wakeboard. Fokus låg på tydlig kommunikation och en lekfull, tillgänglig estetik.
-
+<br><br>
 Designen kombinerar rena typografiska element med handritade former för att skapa en känsla av både struktur och rörelse, i linje med sporten och dess miljö. Färgvalet i blått associerar till vatten och aktivitet.`,
     images: ['wake.jpg'] 
   },
   {
     title: 'Väska anpassad för lådcykel ',
-    description: ` 
-Kurs: Produktionsanpassat utvecklingsprojekt <br> <br>
-
+    description: `Kurs: Produktionsanpassat utvecklingsprojekt <br><br>
 Designmetodik för produktutvecklare, vår första introduktion till design på utbildningen, fick vi uppgiften att skapa en väska anpassad för lådcykel. Vi riktade vår design mot förskolelärare som transporterar barn i lådan men samtidigt behöver ha olika saker lättillgängliga. Lösningen blev en extern hållare som monteras på cykeln och där väskan enkelt fästs.
-
+<br><br>
 Mitt huvudansvar var infästningen mellan cykel och väska. Resultatet, som syns på bilden ovan, blev två diskreta fickor som kilas in i hållaren. Den triangulära lösningen ger stabilitet och förhindrar att väskan rör sig under cykling. Användartester var ett viktigt verktyg i denna delen av processen.`,
     images: ['vask3.jpeg','vask1.jpeg','vask4.jpeg']
   },
   {
     title: 'Smörlycka',
-    description: ` Diskställ för Söderberg & Sara <br> <br>
-Kurs: Användarcentrerad design <br>
-
+    description: `Diskställ för Söderberg & Sara <br><br>
+Kurs: Användarcentrerad design <br><br>
 Vår grupp skapade ett diskställ för caféet Söderberg & Sara i Malmö. Vi observerade att det inte var helt uppenbart vart disken skulle lämnas samt att personalen gjorde onödigt mycket jobb med disken. 
-
+<br><br>
 Resultatet blev konceptet ”Smörlycka, hur säger man disk utan att säga disk?” Vi löste problemet med lokalförändringar och en poster som vägledde kunderna undermedvetet, samtidigt som vi underlättade för personalen med en prototyp av ett diskställ som rymmer fler tallrikar i befintliga diskbackar och utnyttjar maskinens höjd. I kursen fokuserade vi på användare genom observationsstudier och användarintervjuer.`,
     images: ['cafe1.jpeg','cafe4.jpeg','cafe5.jpg','cafe2.jpeg','cafe3.jpeg','cafe6.jpeg','cafe7.jpeg']
   },
   {
     title: 'Parametriserad hålslagare',
-    description: `
-Kurs: 3D CAD <br> <br>
-
+    description: `Kurs: 3D CAD <br><br>
 Hålslagare gjord i Creo, parametriserad, vilket gör det möjligt att enkelt anpassa modellen för olika standarder, inklusive den svenska standarden samt internationella variationer.`,
     images: ['hal1.png', 'hal2.png']
   }
@@ -304,13 +293,27 @@ function openModal(project){
         <h3 class="modal-title">${project.title}</h3>
         ${desc}
         <div class="image-list">
-          ${project.images.map(file => `<img src="${file}" alt="${project.title}">`).join('')}
+          ${(project.images || []).map(file => `<img src="${file}" alt="${project.title}">`).join('')}
         </div>
       </div>
     </div>`;
-  modal.style.display = 'flex';
-  modal.onclick = () => modal.style.display = 'none';
+  // Visa + fade in
+  modal.classList.add('show');
+
+  // Stäng på bakgrundsklick
+  modal.onclick = () => closeModal();
+  // Hindra bubbla när man klickar i innehåll
   modal.querySelector('.modal-content').onclick = (e) => e.stopPropagation();
+}
+
+function closeModal(){
+  // Fade out (behåll innehåll tills transitionen är klar)
+  const onEnd = () => {
+    modal.removeEventListener('transitionend', onEnd);
+    modal.innerHTML = ''; // rensa efter fade
+  };
+  modal.addEventListener('transitionend', onEnd);
+  modal.classList.remove('show');
 }
 
 function renderHome(){
@@ -320,45 +323,73 @@ function renderHome(){
         <div class="hero-img" id="heroImg"></div>
       </div>
     </section>`;
+  applyFade();
+
   const hero = document.getElementById('heroImg');
-  const allImages = PROJECTS.flatMap(p => p.images);
-  if (allImages.length){
-    const rand = allImages[Math.floor(Math.random()*allImages.length)];
-    hero.style.background = `url('${rand}') center/cover no-repeat`;
+  const firstImages = PROJECTS.map(p => p.images && p.images[0]).filter(Boolean);
+  if (firstImages.length){
+    const rand = firstImages[Math.floor(Math.random() * firstImages.length)];
+    const img = new Image();
+    img.src = rand;
+    img.onload = () => {
+      const ratio = img.width / img.height;
+      if (ratio < 1) { hero.style.width = "320px"; hero.style.height = "420px"; }
+      else { hero.style.width = "450px"; hero.style.height = "300px"; }
+      hero.style.background = `url('${rand}') center/cover no-repeat`;
+      requestAnimationFrame(() => hero.classList.add("visible"));
+    };
   }
 }
+
 function renderArbete(){
   main.innerHTML = `
     <section class="page left" id="workPage">
       <div class="projects" id="projects"></div>
     </section>`;
+  applyFade();
+
   const wrap = document.getElementById('projects');
   PROJECTS.forEach(p => {
     const tile = document.createElement('div');
     tile.className = 'project';
+    const firstImg = (p.images || []).find(f => /\.(png|jpe?g|webp|gif)$/i.test(f)) || p.images?.[0] || '';
     tile.innerHTML = `
-      <img src="${p.images[0]}" alt="${p.title}">
+      ${firstImg ? `<img src="${firstImg}" alt="${p.title}">` : ''}
       <div class="project-title">${p.title}</div>
     `;
     tile.addEventListener('click', () => openModal(p));
     wrap.appendChild(tile);
   });
 }
+
 function renderOm(){
   main.innerHTML = `
     <section class="page left" id="aboutPage">
       <div class="om-photo" id="aboutPhoto"></div>
-      <h2>Om mig</h2>
-      <div class="om-about">Kort brödtext om mig. Jag är designer/ingenjör med fokus på produkt- och designutveckling samt cirkuläritet.</div>
+      <h2>CV</h2>
       <div class="cv">
         <h3>Arbetslivserfarenheter</h3>
-        <div class="entry"><b>2025 — Gärsnäs AB</b> Examensarbete...</div>
-        <!-- Kortat för tydlighet -->
+        <div class="entry"><b>2025 — Gärsnäs AB</b> Examensarbete: Design för cirkularitet – återbruk av produktionsspill hos Gärsnäs AB.</div>
+        <div class="entry"><b>2019–2024 — Nuvia Nordic AB</b> Konsult strålskyddstekniker vid samtliga svenska kärnkraftverk.</div>
+        <div class="entry"><b>2017–2019 — Elajo Engineering AB</b> Strålskyddstekniker.</div>
+        <div class="entry"><b>2019–2023 — Blomberg Media</b> Frilansande fotograf.</div>
+        <div class="entry"><b>2018 — Hatstore AB</b> Maskinoperatör.</div>
+        <div class="entry"><b>2017 — Läckeby djursjukhus</b> Vaktmästare.</div>
+
+        <h3>Utbildning</h3>
+        <div class="entry"><b>2022–2025 — Malmö universitet</b> Högskoleingenjör maskinteknik inriktning produktutveckling & design</div>
+
+        <h3>Övriga meriter</h3>
+        <div class="entry">Sydform miniatyrer (2024) — Stolen gick vidare i tävlingen och ställdes ut på Spritfabriken Konsthall, Helsingborg, oktober 2024.</div>
+        <div class="entry">Styrelseledamot i Skåne Wakepark, 2025.</div>
       </div>
     </section>`;
+  applyFade();
+
   const aboutPhoto = document.getElementById('aboutPhoto');
   if (aboutPhoto) aboutPhoto.style.backgroundImage = "url('ommig.jpg')";
 }
+
 function renderKontakt(){
   main.innerHTML = `
     <section class="page" id="contactPage">
@@ -371,7 +402,9 @@ function renderKontakt(){
         </div>
       </div>
     </section>`;
+  applyFade();
 }
+
 function alignAll(){
   const madeByBottom = getMadeByBottomTop();
   const home = document.getElementById('homePage');
@@ -388,6 +421,7 @@ function alignAll(){
     contact.style.marginTop = (liRect.bottom - mainRect.top + 6) + 'px';
   }
 }
+
 window.addEventListener('resize', ()=>{ setUniformUnderline(); alignAll(); });
 window.addEventListener('hashchange', route);
 window.addEventListener('load', route);
